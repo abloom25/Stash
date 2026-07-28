@@ -22,16 +22,18 @@ import type { Variants } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { getLenis } from "@/lib/lenis";
 import { overlayContentVariants } from "@/lib/motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
-  exit: { opacity: 0, y: 12, transition: { duration: 0.15 } },
+  // 退出不单独定义：由右列容器统一做「模糊 + 淡出」（见 src/lib/motion.ts），
+  // 与封面 FLIP 同时进行，避免文字先行消失
 };
 
-/** 内容分块包装：获得 stagger 入场 / 反向淡出 */
+/** 内容分块包装：获得 stagger 入场 */
 export function DetailBlock({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <motion.div variants={itemVariants} className={className}>
@@ -50,6 +52,8 @@ interface DetailOverlayProps {
 }
 
 export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cover, children }: DetailOverlayProps) {
+  const isMobile = useIsMobile(); // 退出方向分端：桌面右列向右、tag 向下；移动端原地
+
   // ESC 关闭
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -78,17 +82,19 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
       aria-modal="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      // 退出时让整层多留到 FLIP 弹簧（≈650ms）落定后再快速淡出——
-      // 过早淡出会让飞回途中的封面半路消失、卡片图又瞬间出现，形成“闪一下”
-      exit={{ opacity: 0, transition: { duration: 0.2, delay: 0.5 } }}
+      // 退出时整层多留到 FLIP 弹簧（≈650ms）落定：文字模糊淡出、scrim 淡出与封面
+      // 飞行同步进行（见下方 scrim / 右列 exit），最后整层快速收尾
+      exit={{ opacity: 0, transition: { duration: 0.15, delay: 0.55 } }}
     >
-      {/* scrim：亮色=浓模糊+主题色浸染；暗色=封面放大模糊背景（.cover-backdrop，见 index.css）。点击空白关闭 */}
+      {/* scrim：亮色=浓模糊+主题色浸染；暗色=封面放大模糊背景（.cover-backdrop，见 index.css）。点击空白关闭。
+          退出时与封面 FLIP 同步缓慢淡出（0.6s），与文字模糊淡出同窗口进行，
+          不再先行消失，避免详情文字与主页面文字重合的突兀感 */}
       <motion.div
         className="detail-scrim absolute inset-0"
         style={{ "--tint": tint ?? "#FAF7F2" } as React.CSSProperties}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
-        exit={{ opacity: 0, transition: { duration: 0.25 } }}
+        exit={{ opacity: 0, transition: { duration: 0.6, ease: "easeIn" } }}
         onClick={onClose}
         aria-hidden="true"
       >
@@ -127,31 +133,37 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
         }}
       >
         {/* 各层容器都挂"点空白关闭"（仅当点到容器自身、而非内容时触发），
-            宽屏下封面下方的空白区域同样可以点击关闭 */}
+            宽屏下封面下方的空白区域同样可以点击关闭；
+            但网格自身不挂——封面与描述之间的 gap 点击不退出 */}
         <div
           className="mx-auto min-h-full max-w-[1200px] p-[clamp(20px,4vw,56px)] pt-20 md:pt-[clamp(20px,4vw,56px)]"
           onClick={(e) => {
             if (e.target === e.currentTarget) onClose();
           }}
         >
-          <div
-            className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-14"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) onClose();
-            }}
-          >
-            {/* 左列：封面锚位（桌面 sticky top；移动端 55% 宽居中偏上）；封面下方空白可点关闭 */}
+          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-14">
+            {/* 左列：封面锚位（桌面 sticky top 且撑满整行高度，使封面下方左侧空白
+                也能点关闭；移动端 55% 宽居中偏上）；封面下方空白可点关闭 */}
             <div
-              className="mx-auto min-h-[40vh] w-[55%] self-start lg:sticky lg:top-[clamp(20px,4vw,56px)] lg:mx-0 lg:min-h-[70vh] lg:w-full"
+              className="mx-auto min-h-[40vh] w-[55%] self-start lg:sticky lg:top-[clamp(20px,4vw,56px)] lg:mx-0 lg:min-h-[70vh] lg:w-full lg:self-stretch"
               onClick={(e) => {
                 if (e.target === e.currentTarget) onClose();
               }}
             >
               {cover}
             </div>
-            {/* 右列：流式内容块（stagger 入场）；块间/底部空白同样可点关闭 */}
+            {/* 右列：流式内容块（stagger 入场）；块间/底部空白同样可点关闭。
+                退出：桌面端向右模糊淡出，移动端原地模糊淡出（与封面 FLIP 同步） */}
             <motion.div
-              variants={overlayContentVariants}
+              variants={{
+                ...overlayContentVariants,
+                exit: {
+                  opacity: 0,
+                  x: isMobile ? 0 : 48,
+                  filter: "blur(12px)",
+                  transition: { duration: 0.45, ease: "easeIn" },
+                },
+              }}
               initial="hidden"
               animate="show"
               exit="exit"

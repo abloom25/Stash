@@ -1,12 +1,11 @@
 /**
  * 「私藏 · Stash」公共数据模型（design.md §8）
  *
- * 三个板块的数据文件（music.ts / films.ts / games.ts）由对应板块 agent 创建，
- * 每文件导出 6 条数组，字段均带行内注释，并以 `// TODO(主人): 替换为真实…`
- * 标出每个待替换字段。封面替换只需改 `cover` 路径。
+ * 各板块数据文件（films.ts / games.ts）由对应板块维护，字段均带行内注释。
+ * 封面替换只需改 `cover` 路径；站点级配置（板块 / 标签 / 社交链接）见 src/config.ts。
  */
 
-/** 媒体 / 权威机构评语（⚠️ 占位引语，请替换为真实评价与链接） */
+/** 媒体 / 权威机构评语 */
 export interface PressQuote {
   source: string; // 来源名：Pitchfork / 烂番茄 / IGN / 豆瓣…
   quote: string; // 引语正文
@@ -49,17 +48,16 @@ export interface FilmWork extends WorkBase {
   type: "电影" | "剧集" | "纪录片";
 }
 
-/** 游戏：平台 / 时长 / 一句话安利 */
+/** 游戏：平台 / 时长 */
 export interface GameWork extends WorkBase {
-  platforms: string[]; // ['Switch', 'PC']
+  platforms: string[]; // ['Switch', 'PC'] —— 显示名与图标见 src/config.ts PLATFORM_TAGS
   hoursPlayed: number; // 游玩时长（小时）
-  verdict: string; // 一句话安利理由
 }
 
 /** 板块标识 */
 export type SectionId = "music" | "film" | "games";
 
-/** 板块元信息（导航 / SectionHeader / 路由共用） */
+/** 板块元信息（实例见 src/config.ts 的 SECTIONS） */
 export interface SectionMeta {
   id: SectionId;
   index: string; // '01'
@@ -70,8 +68,3 @@ export interface SectionMeta {
   accent: string; // 板块主题色
   accentSoft: string; // 主题色浅 tint
 }
-
-export const SECTIONS: SectionMeta[] = [
-  { id: "film", index: "01", zh: "影视", en: "CINEMA & SCREEN", hash: "#film", route: "/film", accent: "#E07A54", accentSoft: "#FBEEE7" },
-  { id: "games", index: "02", zh: "游戏", en: "PLAY LOG", hash: "#games", route: "/games", accent: "#3CA68B", accentSoft: "#E7F4EF" },
-];

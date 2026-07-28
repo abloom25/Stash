@@ -96,7 +96,18 @@ export default function FilmDetail({ id }: { id?: string }) {
       backdropSrc={work.cover} // 暗色模式下放大模糊的背景
       onClose={close}
       cover={
-        <motion.div variants={overlayContentVariants} initial="hidden" animate="show" exit="exit">
+        // 入场淡入；退出时不加淡出/模糊——海报要干净地 FLIP 飞回卡片，
+        // 中途模糊淡出会让飞行动画残缺。
+        // 竖版海报几乎撑满左列，海报下方空白实际落在此包装层上——
+        // 补一个「点自身空白关闭」，让海报下方区域点击也能退出
+        <motion.div
+          variants={overlayContentVariants}
+          initial="hidden"
+          animate="show"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) close();
+          }}
+        >
           {/* 裸海报锚位：FLIP 目标元素=整个封面容器（与卡片容器 layoutId 配对） */}
           <motion.div
             layoutId={reduce ? undefined : `cover-${work.id}`}

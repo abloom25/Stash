@@ -38,7 +38,7 @@ export default function WorkCard({ work, to, accent, coverAspect = "aspect-squar
             layoutId={`cover-${work.id}`}
             transition={FLIP_SPRING}
             src={work.cover}
-            alt={`《${work.title}》封面（占位图）`}
+            alt={`《${work.title}》封面`}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
           />

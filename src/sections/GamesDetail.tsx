@@ -7,16 +7,14 @@
  *
  * 左列（桌面 sticky / 移动居上）：静止致敬的 16:9 key-art 锚位——
  *   · 封面 layoutId={`cover-${work.id}`} + FLIP_SPRING，与美术墙卡片 FLIP 对接；
- *   · 落位后整图 scale 0.98→1（主人反馈：HUD 圆点已去掉）；
- *   · 图下：平台 chips（玻璃 chip + lucide Monitor/Gamepad2）+ Fraunces italic 存档行；
+ *   · 落位后整图 scale 0.98→1；
+ *   · 图下：平台 chips（显示名与图标统一来自 src/config.ts 的 PLATFORM_TAGS）；
  *   · 对 key art 不施加常驻动效（design.md §6.1：游戏 = 静止致敬）。
  *
  * 右列内容块：
  *   ① 作品头（eyebrow / 游戏名 + Fraunces italic 英文行 / <InfoBar> 四格玻璃横条 /
  *      5 星我的评分 + 简短简介）→ ② 媒体评测 <PressQuoteBlock>（IGN 红方块 /
- *      Metacritic 分段着色，由共享 <ScoreBadge> 自动上色）→
- *   ③ 名台词 <LinesBlock> → ④ 安利理由（玻璃块） →
- *   ④ 里程碑玻璃横条（lucide Trophy/Map/Clock + hover tooltip 占位小字）。
+ *      Metacritic 分段着色，由共享 <ScoreBadge> 自动上色）→ ③ 名台词 <LinesBlock>。
  *
  * 移动布局（<768px）：上下结构由 DetailOverlay 网格自适配；InfoBar 退化为 2×2。
  * 关闭：返回按钮 / 点 scrim / ESC → navigate('/#games')（路由 pop，FLIP 飞回原卡位）。
@@ -26,7 +24,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { Clock, Gamepad2, Map, Monitor, Star, Trophy } from "lucide-react";
+import { Star } from "lucide-react";
 import DetailOverlay, { DetailBlock } from "@/components/DetailOverlay";
 import { FLIP_SPRING } from "@/lib/motion";
 import PressQuoteBlock from "@/components/PressQuoteBlock";
@@ -34,18 +32,13 @@ import LinesBlock from "@/components/LinesBlock";
 import { gameWorks, gameExtras } from "@/data/games";
 import type { GameExtra } from "@/data/games";
 import type { GameWork } from "@/data/types";
-
-
-/** 里程碑条图标轮换（Trophy / Map / Clock，games.md §3④） */
-const MILESTONE_ICONS = [Trophy, Map, Clock];
-
-/** 里程碑横条暂时隐藏（数据保留在 games.ts gameExtras，后续接 Steam 再启用） */
-const SHOW_MILESTONES = false;
+import { platformTag } from "@/config";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /** 四格玻璃信息横条：平台 / 通关时长 / 类型 / 成就（格间竖 hairline；移动 2×2） */
 function InfoBar({ work, extra, accent }: { work: GameWork; extra: GameExtra; accent: string }) {
   const cells = [
-    { label: "平台", value: work.platforms.join(" · ") },
+    { label: "平台", value: work.platforms.map((p) => platformTag(p).label).join(" · ") },
     { label: "通关时长", value: extra.hoursLabel ?? `${work.hoursPlayed}h` },
     { label: "类型", value: work.genres[0] },
     { label: "成就", value: extra.achievements },
@@ -98,6 +91,7 @@ function MyRatingStars({ rating, accent }: { rating: number; accent: string }) {
 export default function GamesDetail({ id }: { id?: string }) {
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion();
+  const isMobile = useIsMobile(); // tag 退出方向分端（桌面向下 / 移动原地）
   const work = gameWorks.find((w) => w.id === id);
 
   // id 无匹配：replace 回美术墙锚点（渲染 null）
@@ -129,25 +123,29 @@ export default function GamesDetail({ id }: { id?: string }) {
         />
       </motion.div>
 
-      {/* 平台 chips（玻璃 chip + Monitor/Gamepad2 图标）—— TODO(主人): 占位平台，替换为真实 */}
-      <div className="mt-5 flex flex-wrap gap-2">
-        {work.platforms.map((p) => (
-          <span
-            key={p}
-            className="glass inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[0.72rem] font-medium text-ink-2"
-          >
-            {p === "PC" ? (
-              <Monitor size={13} strokeWidth={2} style={{ color: accent }} />
-            ) : (
-              <Gamepad2 size={13} strokeWidth={2} style={{ color: accent }} />
-            )}
-            {p === "PC" ? "Steam" : p}
-          </span>
-        ))}
-      </div>
-
-      {/* 存档日期行（Fraunces italic 小字）—— TODO(主人): 占位存档信息，替换为真实 */}
-      <p className="mt-3 font-serif text-[0.8rem] italic text-ink-3">{extra.saveNote}</p>
+      {/* 平台 chips（玻璃 chip + 图标，标签与图标统一来自 src/config.ts PLATFORM_TAGS）。
+          入场：封面 FLIP 落定后淡入；退出：桌面端向下 + 模糊淡出（移动端原地模糊淡出），
+          与右列文字、scrim 同窗口进行 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transition: { delay: 0.45, duration: 0.3 } }}
+        exit={{ opacity: 0, y: isMobile ? 0 : 24, filter: "blur(8px)", transition: { duration: 0.4, ease: "easeIn" } }}
+        className="mt-5 flex flex-wrap gap-2"
+      >
+        {work.platforms.map((p) => {
+          const tag = platformTag(p);
+          const Icon = tag.icon;
+          return (
+            <span
+              key={p}
+              className="glass inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[0.72rem] font-medium text-ink-2"
+            >
+              <Icon size={13} strokeWidth={2} style={{ color: accent }} />
+              {tag.label}
+            </span>
+          );
+        })}
+      </motion.div>
     </div>
   );
 
@@ -177,36 +175,6 @@ export default function GamesDetail({ id }: { id?: string }) {
       <DetailBlock>
         <LinesBlock lines={work.lines} accent={accent} />
       </DetailBlock>
-
-      {/* ④ 安利理由 —— 暂时隐藏（数据保留在 games.ts gameExtras，后续接 Steam 再启用） */}
-
-      {/* ⑤ 里程碑横条 —— 暂时隐藏（数据保留，后续接 Steam 再启用） */}
-      {SHOW_MILESTONES && extra.milestones.length > 0 && (
-        <DetailBlock>
-          <div className="glass flex flex-wrap items-center gap-3 px-5 py-4">
-            <span className="eyebrow" style={{ color: accent }}>
-              里程碑
-            </span>
-            {extra.milestones.map((m, i) => {
-              const Icon = MILESTONE_ICONS[i % MILESTONE_ICONS.length];
-              return (
-                <span
-                  key={m.label}
-                  className="group/ms relative inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.75rem] font-medium"
-                  style={{ borderColor: `${accent}66`, color: accent, backgroundColor: `${accent}0D` }}
-                >
-                  <Icon size={13} strokeWidth={2} />
-                  {m.label}
-                  {/* hover tooltip（占位小字，TODO(主人): 替换为真实达成说明） */}
-                  <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2.5 py-1 text-[0.65rem] font-medium text-paper opacity-0 shadow-lg transition-opacity duration-200 group-hover/ms:opacity-100">
-                    {m.tip}
-                  </span>
-                </span>
-              );
-            })}
-          </div>
-        </DetailBlock>
-      )}
     </DetailOverlay>
   );
 }

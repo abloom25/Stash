@@ -2,10 +2,10 @@
  * 板块 02 · 游戏 PLAY LOG — 游戏单数据（按主人给出的顺序排列）
  *
  * 游戏名 / 开发商 / 年份 / 封面 / 媒体评测（IGN、GameSpot、Metacritic 等真实评分与引语摘录）
- * 均为真实信息；安利理由仍为占位文案，请替换为你自己的理由。
- * 封面替换只需改 `cover` 路径（16:9）。
- * GameWork 之外的板块扩展字段（通关状态 / 综合分 / 成就 / 存档行 / 安利理由 / 里程碑）
- * 见下方 `gameExtras`，与 gameWorks 通过 id 关联。
+ * 均为真实信息。封面替换只需改 `cover` 路径（16:9）。
+ * 平台标签的显示名与图标集中在 src/config.ts 的 PLATFORM_TAGS。
+ * GameWork 之外的板块扩展字段（通关状态 / 综合分 / 成就）见下方 `gameExtras`，
+ * 与 gameWorks 通过 id 关联。
  */
 import type { GameWork } from "./types";
 
@@ -31,7 +31,6 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC", "PS5"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 80, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
   {
     id: "game-02",
@@ -53,7 +52,6 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC", "Switch"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 200, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
   {
     id: "game-03",
@@ -75,7 +73,6 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC", "Switch"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 150, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
   {
     id: "game-04",
@@ -97,7 +94,6 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 300, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
   {
     id: "game-05",
@@ -110,7 +106,7 @@ export const gameWorks: GameWork[] = [
     palette: "#3E4E7A", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "IGN", quote: "《底特律》提供了大量清晰透明的分支路径，吸引你一玩再玩；选择具有永久性，让全程的赌注不断升高。", score: "8/10" }, // IGN 评测摘录（译）
-      { source: "Gamersky", quote: "《底特律：变人》是 Quantic Dream 有史以来最具野心的作品。", score: "9.3/10" }, // 游民星空评测摘录（译）
+      { source: "Gamersky", quote: "《底特律》是 Quantic Dream 有史以来最具野心的作品。", score: "9.3/10" }, // 游民星空评测摘录（译）
     ],
     myRating: 9, // TODO(主人): 替换为我的评分（0–10）
     description: "2038 年的底特律，卡拉、康纳、马库斯三名仿生人在人与机器的冲突中走向觉醒。",
@@ -119,7 +115,6 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC", "PS5"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 40, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
   {
     id: "game-06",
@@ -142,7 +137,6 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC", "PS5"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 60, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
   {
     id: "game-07",
@@ -166,22 +160,18 @@ export const gameWorks: GameWork[] = [
     ],
     platforms: ["PC", "Switch"], // TODO(主人): 替换为真实游玩平台
     hoursPlayed: 6, // TODO(主人): 替换为真实游玩时长（小时）
-    verdict: "占位——一句话安利理由。", // TODO(主人): 替换为一句话安利理由
   },
 ];
 
 /**
- * 板块扩展占位字段（卡片状态 / 详情 InfoBar / 安利理由 / 里程碑条）。
+ * 板块扩展字段（通关状态 / Metacritic 综合分 / 成就进度）。
  * 与 gameWorks 通过 id 关联。
  */
 export interface GameExtra {
   status: "cleared" | "playing"; // 已通关 ✓ / 沉迷中…
-  metaScore: number; // Metacritic 综合分（占位）
+  metaScore: number; // Metacritic 综合分
   achievements: string; // 成就进度，如 '32/32'
-  saveNote: string; // 详情 key-art 下方存档行（Fraunces italic）
   hoursLabel?: string; // 时长展示文案（可选，如 '200h+'）
-  recommendations: string[]; // 「安利理由 · WHY YOU SHOULD PLAY」清单
-  milestones: { label: string; tip: string }[]; // 里程碑条（label + hover tooltip）
 }
 
 export const gameExtras: Record<string, GameExtra> = {
@@ -189,114 +179,37 @@ export const gameExtras: Record<string, GameExtra> = {
     status: "cleared", // TODO(主人): 替换为真实状态
     metaScore: 82, // TODO(主人): 替换为真实 Metacritic 分数
     achievements: "45/63", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 替换为真实进度", // TODO(主人): 替换为真实存档日期 / 进度
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "首次通关", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "全路网建成", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "奖杯收尾", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
   "game-02": {
     status: "playing", // TODO(主人): 替换为真实状态
     metaScore: 89, // TODO(主人): 替换为真实 Metacritic 分数
     achievements: "38/40", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 第五年冬", // TODO(主人): 替换为真实存档日期 / 进度
     hoursLabel: "200h+", // TODO(主人): 替换为真实时长文案
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "第一桶金", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "社区中心修复", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "完美度达成", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
   "game-03": {
     status: "cleared", // TODO(主人): 替换为真实状态
     metaScore: 83, // TODO(主人): 替换为真实 Metacritic 分数
     achievements: "52/88", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 替换为真实进度", // TODO(主人): 替换为真实存档日期 / 进度
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "击败月亮领主", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "全 NPC 入住", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "大师模式启程", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
   "game-04": {
     status: "playing", // TODO(主人): 替换为真实状态
     metaScore: 93, // TODO(主人): 替换为真实 Metacritic 分数
     achievements: "60/80", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 联机存档第 N 年", // TODO(主人): 替换为真实存档日期 / 进度
     hoursLabel: "300h+", // TODO(主人): 替换为真实时长文案
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "击败末影龙", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "第一座红石装置", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "毕业建筑落成", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
   "game-05": {
     status: "cleared", // TODO(主人): 替换为真实状态
     metaScore: 78, // TODO(主人): 替换为真实 Metacritic 分数
     achievements: "30/49", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 一周目完结", // TODO(主人): 替换为真实存档日期 / 进度
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "一周目通关", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "和平路线达成", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "全员存活", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
   "game-06": {
     status: "playing", // TODO(主人): 替换为真实状态
     metaScore: 78, // Metacritic PC 版
     achievements: "进行中", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 塔卫二开拓中", // TODO(主人): 替换为真实存档日期 / 进度
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "基建初见规模", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "主线推进中", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "长期经营", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
   "game-07": {
     status: "cleared", // TODO(主人): 替换为真实状态
     metaScore: 81, // TODO(主人): 替换为真实 Metacritic 分数
     achievements: "全流程", // TODO(主人): 替换为真实成就进度
-    saveNote: "存档日期 · 占位 — 已通关", // TODO(主人): 替换为真实存档日期 / 进度
-    recommendations: [
-      "占位理由一 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由二 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-      "占位理由三 —— 说明文字。", // TODO(主人): 替换为真实安利理由
-    ],
-    milestones: [
-      { label: "抵达月球", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "通关纪念", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-      { label: "原声带循环中", tip: "占位小字" }, // TODO(主人): 替换为真实里程碑
-    ],
   },
 };

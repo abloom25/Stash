@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { SECTIONS } from "@/data/types";
+import { SECTIONS } from "@/config";
 import type { SectionId } from "@/data/types";
 import { scrollToHash } from "@/lib/lenis";
 

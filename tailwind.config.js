@@ -25,7 +25,7 @@ module.exports = {
         // 板块主题色（accent 仅作点缀 ≤10% 面积）
         music: { DEFAULT: "#7B6BD6", soft: "#EFEBFB" },
         film: { DEFAULT: "#E07A54", soft: "#FBEEE7" },
-        games: { DEFAULT: "#3CA68B", soft: "#E7F4EF" },
+        games: { DEFAULT: "#8B7EC8", soft: "#EEEBF8" },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

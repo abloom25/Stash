@@ -16,6 +16,7 @@ import { SplitText } from "gsap/SplitText";
 import { useGSAP } from "@gsap/react";
 import { Moon, Sun } from "lucide-react";
 import { useDarkMode } from "@/lib/theme";
+import { SITE } from "@/config";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -94,10 +95,9 @@ export default function Hero() {
             Music, Film &amp; Play — pressed between pages like dried flowers.
           </p>
 
-          {/* 4. 个人签名句（TODO(主人): 替换为你自己的一句话） */}
+          {/* 4. 个人签名句（文案在 src/config.ts 的 SITE.heroSignature） */}
           <p className="hero-sign mt-8 max-w-[520px] text-[1.05rem] leading-[1.9] text-ink-2">
-            「这里收藏着我反复聆听的唱片、不愿散场的电影，和通关了还想重来一次的游戏。排名不分先后，喜欢不分高下。」
-            <span className="mt-2 block text-[0.8rem] text-ink-3">—— 占位签名，请替换为你自己的一句话</span>
+            {SITE.heroSignature}
           </p>
 
           {/* 5. 明暗切换开关（玻璃小药丸，签名句后独立入场） */}
