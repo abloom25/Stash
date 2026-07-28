@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 首帧前应用已存的明暗偏好，避免主题闪烁（与 src/lib/theme.ts 的 KEY 保持一致） -->
+    <script>
+      try {
+        if (localStorage.getItem("pc-theme") === "dark") document.documentElement.classList.add("dark");
+      } catch (e) {}
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/assets/monogram.svg" />
+    <title>私藏 · Stash — 把热爱的事物装订成册</title>
+    <meta name="description" content="一本装帧精美的私人杂志：收藏反复聆听的唱片、不愿散场的电影，和通关了还想重来一次的游戏。" />
+    <meta property="og:title" content="私藏 · Stash" />
+    <meta property="og:description" content="把热爱的事物装订成册 — 音乐 / 影视 / 游戏的私人珍藏志。" />
+    <meta property="og:image" content="/assets/og-cover.png" />
+    <!-- Google Fonts：Fraunces（衬线·opsz 轴）+ Manrope + Noto Serif SC + Noto Sans SC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@500;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- 私藏 monogram：一枚细线小书签 / 逗号形符号，单线 stroke，极简 -->
+  <path
+    d="M30 10c-8.5 2.8-14 9.4-14 17.2 0 6 3.6 9.8 8.6 9.8 4.6 0 8-3.4 8-7.8 0-4.2-3.2-7.2-7.4-7.2-.9 0-1.7.14-2.4.4C23.9 17.4 26.4 13.4 30 10Z"
+    stroke="#23202B"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

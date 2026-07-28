@@ -1,0 +1,372 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* 全站图片不可拖拽 / 不可框选（陈列墙不需要原生 img drag 幽灵图） */
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  :root {
+    /* 「私藏」亮色主题（默认） */
+    --paper: 250 247 242;
+    --paper-2: 243 239 232;
+    --ink: 35 32 43;
+    --ink-2: 110 104 120;
+    --ink-3: 163 157 174;
+  }
+
+  .dark {
+    /* 「私藏」暗色主题：深墨紫底 + 柔白文字 */
+    --paper: 20 18 28;
+    --paper-2: 28 25 37;
+    --ink: 234 230 240;
+    --ink-2: 166 159 176;
+    --ink-3: 120 113 132;
+
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    /* 细微噪点之外的纸面本色；文字渲染优化 */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: rgba(123, 107, 214, 0.22); /* music accent 淡紫 */
+    color: #23202b;
+  }
+  /* 柔和滚动条 */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(35, 32, 43, 0.16);
+    border-radius: 999px;
+    border: 3px solid #faf7f2;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(35, 32, 43, 0.28);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+   「私藏 · Stash」全局配方（design.md §3.4 / §6 / home.md §0）
+   ──────────────────────────────────────────────────────────────────────── */
+@layer components {
+  /* 标准玻璃卡 */
+  .glass {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(22px) saturate(1.4);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow:
+      0 8px 32px rgba(35, 32, 43, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-radius: 24px;
+  }
+  /* 浓玻璃（导航条 / 抽屉） */
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow:
+      0 8px 32px rgba(35, 32, 43, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  /* 详情覆盖层 scrim：浓模糊，背后网格若隐若现 */
+  .glass-scrim {
+    background: rgba(250, 247, 242, 0.72);
+    backdrop-filter: blur(40px) saturate(1.3);
+    -webkit-backdrop-filter: blur(40px) saturate(1.3);
+  }
+  /* 我的私藏笔记：略暖的玻璃底，与冷白媒体块区分 */
+  .glass-warm {
+    background: rgba(255, 252, 247, 0.6);
+    backdrop-filter: blur(22px) saturate(1.3);
+    -webkit-backdrop-filter: blur(22px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow:
+      0 8px 32px rgba(35, 32, 43, 0.07),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+  }
+  /* 细分隔线 */
+  .hairline {
+    border-color: rgba(35, 32, 43, 0.08);
+  }
+  /* Hero 明暗开关的入场（纯 CSS，延迟到签名句之后；不用 GSAP，避免 tween 卡隐藏态） */
+  @keyframes hero-toggle-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .hero-theme {
+    animation: hero-toggle-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 2.1s backwards;
+  }
+
+  /* eyebrow 英文小标签 */
+  .eyebrow {
+    font-family: "Manrope", "Noto Sans SC", sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    color: #a39dae;
+  }
+  /* 详情覆盖层 scrim：浓模糊 + 作品主题色浸染（--tint 由内联样式注入） */
+  .detail-scrim {
+    background: linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--tint, #faf7f2) 26%, transparent) 0%,
+      rgba(250, 247, 242, 0.78) 45%,
+      rgba(250, 247, 242, 0.72) 70%,
+      color-mix(in srgb, var(--tint, #faf7f2) 18%, transparent) 100%
+    );
+    backdrop-filter: blur(40px) saturate(1.3);
+    -webkit-backdrop-filter: blur(40px) saturate(1.3);
+  }
+}
+
+/* ── 暗色模式覆盖（html.dark） ─────────────────────────────────────────── */
+@layer components {
+  html.dark .glass {
+    background: rgba(34, 31, 45, 0.55);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  html.dark .glass-strong {
+    background: rgba(34, 31, 45, 0.72);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  html.dark .glass-warm {
+    background: rgba(46, 40, 56, 0.55);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  html.dark .hairline {
+    border-color: rgba(234, 230, 240, 0.12);
+  }
+  /* 暗色 scrim：封面图放大模糊作背景（Apple Music 式），上方压一层暗色渐变保证可读性 */
+  html.dark .detail-scrim {
+    background: rgba(14, 12, 20, 0.35);
+  }
+  html.dark .detail-scrim::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(14, 12, 20, 0.42) 0%, rgba(14, 12, 20, 0.66) 100%);
+  }
+  .cover-backdrop {
+    display: none; /* 亮色模式不启用 */
+  }
+  html.dark .cover-backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.5); /* 放大裁边，避免模糊边缘透明 */
+    filter: blur(64px) saturate(1.25) brightness(0.6);
+    pointer-events: none;
+  }
+  /* 暗色下光斑收敛亮度，不喧宾夺主 */
+  html.dark .blob {
+    opacity: 0.34;
+    filter: blur(70px) saturate(0.9) brightness(0.85);
+  }
+  /* 暗色下评分徽章提亮，保证深底可读性 */
+  html.dark .score-badge {
+    filter: brightness(1.5) saturate(1.05);
+  }
+}
+
+@layer base {
+  html.dark ::selection {
+    background: rgba(123, 107, 214, 0.4);
+    color: #eae6f0;
+  }
+  html.dark ::-webkit-scrollbar-thumb {
+    background: rgba(234, 230, 240, 0.18);
+    border-color: #14121c;
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(234, 230, 240, 0.3);
+  }
+  /* 暗色下噪点改为柔光模式，避免 multiply 把画面压黑 */
+  html.dark .grain-overlay {
+    mix-blend-mode: soft-light;
+    opacity: 0.4;
+  }
+}
+
+/* ── 背景弥散光斑（home.md §0，纯 CSS transform 动画，45–70s 极慢漂移） ── */
+@layer components {
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .blob-peach {
+    background: radial-gradient(circle, #ffd9c2 0%, rgba(255, 217, 194, 0) 70%);
+  }
+  .blob-lavender {
+    background: radial-gradient(circle, #dcd3f7 0%, rgba(220, 211, 247, 0) 70%);
+  }
+  .blob-mint {
+    background: radial-gradient(circle, #cbebdc 0%, rgba(203, 235, 220, 0) 70%);
+  }
+  .blob-sky {
+    background: radial-gradient(circle, #cbe0f6 0%, rgba(203, 224, 246, 0) 70%);
+  }
+  .blob-rose {
+    background: radial-gradient(circle, #f7ccda 0%, rgba(247, 204, 218, 0) 70%);
+  }
+}
+
+@keyframes blob-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(6vw, 4vw, 0); }
+}
+@keyframes blob-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-7vw, 5vw, 0); }
+}
+@keyframes blob-drift-3 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(5vw, -6vw, 0); }
+}
+@keyframes blob-drift-4 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-6vw, -4vw, 0); }
+}
+@keyframes blob-drift-5 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(4vw, -7vw, 0); }
+}
+/* Hero 大标题后方 peach 光斑的缓慢呼吸（8s） */
+@keyframes blob-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+/* 滚动提示小圆点循环下落 */
+@keyframes scroll-dot {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(38px); opacity: 0; }
+}
+
+@layer components {
+  /* 全页噪点（grain.svg，opacity 5%，multiply 混合增加纸感） */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("/assets/grain.svg");
+    background-size: 200px 200px;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+  }
+}
+
+/* ── prefers-reduced-motion：关闭光斑漂移 / 视差 / 循环动效 ── */
+@media (prefers-reduced-motion: reduce) {
+  .blob,
+  .blob-breathe,
+  .scroll-dot-anim,
+  .hero-theme {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
