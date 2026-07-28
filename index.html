@@ -3,13 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 深链接（GitHub Pages 404.html 回退 / SPA rewrite）下 ./assets 相对路径会
+         解析到错误的子目录——按部署位置把 <base> 提为站点根（GitHub Pages 项目页
+         在 /Stash/ 下，其余平台在域名根）。须在资源标签之前注入 -->
+    <script>
+      document.write(
+        '<base href="' + (window.location.pathname.indexOf("/Stash") === 0 ? "/Stash/" : "/") + '" />'
+      );
+    </script>
     <!-- 首帧前应用已存的明暗偏好，避免主题闪烁（与 src/lib/theme.ts 的 KEY 保持一致） -->
     <script>
       try {
         if (localStorage.getItem("pc-theme") === "dark") document.documentElement.classList.add("dark");
       } catch (e) {}
     </script>
-    <link rel="icon" type="image/svg+xml" href="/assets/monogram.svg" />
+    <link rel="icon" type="image/svg+xml" href="assets/monogram.svg" />
     <title>私藏 · Stash — 把热爱的事物装订成册</title>
     <meta name="description" content="一本装帧精美的私人杂志：收藏反复聆听的唱片、不愿散场的电影，和通关了还想重来一次的游戏。" />
     <meta property="og:title" content="私藏 · Stash" />

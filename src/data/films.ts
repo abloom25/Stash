@@ -15,7 +15,7 @@ export const filmWorks: FilmWork[] = [
     creator: "宋岳峰",
     year: 2014,
     genres: ["动画", "奇幻", "冒险"],
-    cover: "/assets/cover-film-01.png", // TODO(主人): 替换为真实海报（建议 2:3，如 600×900）
+    cover: "assets/cover-film-01.png", // TODO(主人): 替换为真实海报（建议 2:3，如 600×900）
     palette: "#CD8D83", // TODO(主人): 替换为海报主色 hex
     press: [
       { source: "豆瓣", quote: "良心国产动画，制作精良，布景、造型、视效都能看出创作者的用心；几乎占了半部电影的决战打斗戏份，场面调度出乎意料的好。", score: "7.8/10" }, // 豆瓣影评摘录
@@ -38,7 +38,7 @@ export const filmWorks: FilmWork[] = [
     creator: "丁亮",
     year: 2015,
     genres: ["动画", "喜剧", "家庭"],
-    cover: "/assets/cover-film-02.png", // TODO(主人): 替换为真实海报
+    cover: "assets/cover-film-02.png", // TODO(主人): 替换为真实海报
     palette: "#2E7BA6", // TODO(主人): 替换为海报主色 hex
     press: [
       { source: "豆瓣", quote: "熊出没系列的这一部雪岭熊风，凭心而论比前几部精彩不少。", score: "8.4/10" }, // 豆瓣影评摘录
@@ -60,7 +60,7 @@ export const filmWorks: FilmWork[] = [
     creator: "黄家康 / 赵霁",
     year: 2019,
     genres: ["动画", "爱情", "奇幻"],
-    cover: "/assets/cover-film-03.png", // TODO(主人): 替换为真实海报
+    cover: "assets/cover-film-03.png", // TODO(主人): 替换为真实海报
     palette: "#6B808D", // TODO(主人): 替换为海报主色 hex
     press: [
       { source: "豆瓣", quote: "2019 年第一份国产电影惊喜，居然是《白蛇：缘起》。", score: "7.8/10" }, // 豆瓣网友评价（信息时报转引）
@@ -83,7 +83,7 @@ export const filmWorks: FilmWork[] = [
     creator: "程腾 / 李炜",
     year: 2020,
     genres: ["动画", "奇幻", "动作"],
-    cover: "/assets/cover-film-04.png", // TODO(主人): 替换为真实海报
+    cover: "assets/cover-film-04.png", // TODO(主人): 替换为真实海报
     palette: "#9E391B", // 海报主色（火红）
     press: [
       { source: "豆瓣", quote: "观众诟病最多的是故事改编不够普世；但画面的制作精良，几乎无人否认。", score: "6.6/10" }, // 豆瓣口碑综述（新浪财经）
@@ -106,7 +106,7 @@ export const filmWorks: FilmWork[] = [
     creator: "田晓鹏",
     year: 2023,
     genres: ["动画", "奇幻", "剧情"],
-    cover: "/assets/cover-film-05.png", // TODO(主人): 替换为真实海报
+    cover: "assets/cover-film-05.png", // TODO(主人): 替换为真实海报
     palette: "#199ACA", // 海报主色（深海蓝）
     press: [
       { source: "豆瓣", quote: "深海真的很适合大荧幕观看，视效体验拉满。", score: "7.4/10" }, // 豆瓣短评摘录

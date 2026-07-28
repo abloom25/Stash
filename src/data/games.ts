@@ -17,7 +17,7 @@ export const gameWorks: GameWork[] = [
     creator: "小岛工作室",
     year: 2019,
     genres: ["开放世界", "剧情"],
-    cover: "/assets/cover-game-01.png", // TODO(主人): 替换封面改这里（1280×720 16:9）
+    cover: "assets/cover-game-01.png", // TODO(主人): 替换封面改这里（1280×720 16:9）
     palette: "#5E7B96", // 封面主色（荒野蓝灰）
     press: [
       { source: "GameSpot", quote: "它积极向上，却不回避痛苦——无论剧情还是玩法，它都在论证：正是逆境本身，让事情值得去做，让生命值得去活。", score: "9/10" }, // GameSpot 评测摘录（译）
@@ -39,7 +39,7 @@ export const gameWorks: GameWork[] = [
     creator: "ConcernedApe",
     year: 2016,
     genres: ["模拟经营", "像素"],
-    cover: "/assets/cover-game-02.png", // TODO(主人): 替换封面改这里
+    cover: "assets/cover-game-02.png", // TODO(主人): 替换封面改这里
     palette: "#056ECD", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "IGN", quote: "《星露谷物语》有一种我在其他游戏里很少找到的慰藉……种田、钓鱼、打怪、手工、采矿，和所有人做朋友，或者什么都来一点——这场农场冒险应有尽有。", score: "9.5/10" }, // IGN 评测摘录（译）
@@ -60,7 +60,7 @@ export const gameWorks: GameWork[] = [
     creator: "Re-Logic",
     year: 2011,
     genres: ["沙盒", "冒险"],
-    cover: "/assets/cover-game-03.png", // TODO(主人): 替换封面改这里
+    cover: "assets/cover-game-03.png", // TODO(主人): 替换封面改这里
     palette: "#2A9A7B", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "GameSpot", quote: "当《泰拉瑞亚》把你吸进去，你会发现自己挖掘和建造的时间，远远超出原本的打算。", score: "8/10" }, // GameSpot 评测摘录（译）
@@ -81,7 +81,7 @@ export const gameWorks: GameWork[] = [
     creator: "Mojang",
     year: 2011,
     genres: ["沙盒", "生存"],
-    cover: "/assets/cover-game-04.png", // TODO(主人): 替换封面改这里
+    cover: "assets/cover-game-04.png", // TODO(主人): 替换封面改这里
     palette: "#1B89B9", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "IGN", quote: "方块画面「一眼难忘」（instantly memorable）；「与朋友一起冒险，总是更加快乐」（adventuring is always better with friends）。", score: "9/10" }, // IGN 评测摘录（译）
@@ -102,7 +102,7 @@ export const gameWorks: GameWork[] = [
     creator: "Quantic Dream",
     year: 2018,
     genres: ["互动叙事", "剧情"],
-    cover: "/assets/cover-game-05.png", // TODO(主人): 替换封面改这里
+    cover: "assets/cover-game-05.png", // TODO(主人): 替换封面改这里
     palette: "#3E4E7A", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "IGN", quote: "《底特律》提供了大量清晰透明的分支路径，吸引你一玩再玩；选择具有永久性，让全程的赌注不断升高。", score: "8/10" }, // IGN 评测摘录（译）
@@ -123,7 +123,7 @@ export const gameWorks: GameWork[] = [
     creator: "鹰角网络",
     year: 2025, // TODO(主人): 若发行时间有变请更新
     genres: ["RPG", "策略"],
-    cover: "/assets/cover-game-06.png", // TODO(主人): 替换封面改这里
+    cover: "assets/cover-game-06.png", // TODO(主人): 替换封面改这里
     palette: "#8A9333", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "IGN", quote: "它为抽卡游戏添上美丽的一笔：把复杂的工厂建造模拟与诱人的开放世界 RPG 糅合在一起，自成一格。", score: "7/10" }, // IGN 评测摘录（译）
@@ -145,7 +145,7 @@ export const gameWorks: GameWork[] = [
     creator: "Freebird Games",
     year: 2011,
     genres: ["叙事", "独立"],
-    cover: "/assets/cover-game-07.png", // TODO(主人): 替换封面改这里
+    cover: "assets/cover-game-07.png", // TODO(主人): 替换封面改这里
     palette: "#AE5835", // TODO(主人): 替换为封面主色 hex
     press: [
       { source: "Gamer.no", quote: "《去月球》是那种让你一见钟情的游戏……它故事多于玩法，但那是一个怎样的故事啊。", score: "100/100" }, // Gamer.no 评测摘录（译）

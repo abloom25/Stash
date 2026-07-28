@@ -79,7 +79,7 @@ export default function Navbar() {
         <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-[clamp(20px,5vw,64px)]">
           {/* 字标 */}
           <Link to="/" className="group flex items-center gap-2.5" aria-label="回到首页">
-            <img src="/assets/monogram.svg" alt="" className="h-6 w-6 transition-transform duration-300 group-hover:rotate-[15deg]" />
+            <img src="assets/monogram.svg" alt="" className="h-6 w-6 transition-transform duration-300 group-hover:rotate-[15deg]" />
             <span className="font-serif text-[1.05rem] font-bold tracking-[0.04em] text-ink">
               私藏
               <span className="mx-1.5 text-ink-3">·</span>

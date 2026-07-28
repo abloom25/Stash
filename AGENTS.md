@@ -75,3 +75,7 @@ src/
 
 - GitHub Pages：`.github/workflows/deploy.yml` 推 `main` 自动部署（已含 SPA 404 兜底）。
 - Vercel：`vercel.json`；Cloudflare Pages：`public/_redirects`。三者都是纯静态 + SPA 回退。
+- **子路径部署约定**：站点可部署在域名根（Vercel/CF）或 `/Stash/` 子路径（GitHub Pages）。
+  `index.html` 头部内联脚本按 URL 注入 `<base>`（`/Stash/` 或 `/`），`main.tsx` 的
+  `BrowserRouter basename` 用同一判断——两者必须保持一致。代码中的资源引用
+  （封面 / monogram 等）一律用**相对路径** `assets/...`，不要写 `/assets/...`。
