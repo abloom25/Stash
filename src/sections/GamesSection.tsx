@@ -44,7 +44,13 @@ const cardVariants: Variants = {
 function KeyartCard({ work }: { work: GameWork }) {
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion();
-  const open = () => navigate(`/games/${work.id}`);
+
+  // 按卡片所在半屏决定详情页封面列方位（左半屏→封面在左，右半屏→封面在右）
+  const open = (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const coverSide = rect.left + rect.width / 2 < window.innerWidth / 2 ? "left" : "right";
+    navigate(`/games/${work.id}`, { state: { coverSide } });
+  };
 
   return (
     <motion.article
@@ -56,7 +62,7 @@ function KeyartCard({ work }: { work: GameWork }) {
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          open();
+          open(e);
         }
       }}
       className="group cursor-pointer rounded-[16px] transition-transform hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-games/60 focus-visible:ring-offset-2"

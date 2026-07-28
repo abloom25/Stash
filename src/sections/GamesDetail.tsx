@@ -21,8 +21,8 @@
  * id 无匹配：render null，并在 effect 中 replace 回 '/#games'。
  * prefers-reduced-motion：封面不挂 layoutId，FLIP 退化为淡入淡出。
  */
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { Star } from "lucide-react";
 import DetailOverlay, { DetailBlock } from "@/components/DetailOverlay";
@@ -33,7 +33,6 @@ import { gameWorks, gameExtras } from "@/data/games";
 import type { GameExtra } from "@/data/games";
 import type { GameWork } from "@/data/types";
 import { platformTag } from "@/config";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 /** 四格玻璃信息横条：平台 / 通关时长 / 类型 / 成就（格间竖 hairline；移动 2×2） */
 function InfoBar({ work, extra, accent }: { work: GameWork; extra: GameExtra; accent: string }) {
@@ -90,8 +89,8 @@ function MyRatingStars({ rating, accent }: { rating: number; accent: string }) {
 
 export default function GamesDetail({ id }: { id?: string }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const reducedMotion = useReducedMotion();
-  const isMobile = useIsMobile(); // tag 退出方向分端（桌面向下 / 移动原地）
   const work = gameWorks.find((w) => w.id === id);
 
   // id 无匹配：replace 回美术墙锚点（渲染 null）
@@ -99,13 +98,20 @@ export default function GamesDetail({ id }: { id?: string }) {
     if (!work) navigate("/#games", { replace: true });
   }, [work, navigate]);
 
+  // 封面列方位：跟随被点击卡片所在半屏（卡片经 navigate state 传入；直链默认左）。
+  // 挂载时锁存——退出动画期间 location.state 已随路由变化清空，不能现读
+  const [coverSide] = useState<"left" | "right">(() =>
+    (location.state as { coverSide?: string } | null)?.coverSide === "right" ? "right" : "left"
+  );
+
   if (!work) return null;
 
   const accent = work.palette; // 每部作品自己的主题色
   const extra = gameExtras[work.id];
   const close = () => navigate("/#games");
 
-  // 左列：key-art 锚位（静止致敬，无常驻动效；裸图 + 柔和静影）
+  // 左列：key-art 锚位（静止致敬，无常驻动效；裸图 + 柔和静影）。
+  // 封面下不再放平台 chips——右侧 InfoBar 已有平台格，省去元素碰撞
   const cover = (
     <div>
       <motion.div
@@ -122,35 +128,11 @@ export default function GamesDetail({ id }: { id?: string }) {
           className="h-full w-full object-cover"
         />
       </motion.div>
-
-      {/* 平台 chips（玻璃 chip + 图标，标签与图标统一来自 src/config.ts PLATFORM_TAGS）。
-          入场：封面 FLIP 落定后淡入；退出：桌面端向下 + 模糊淡出（移动端原地模糊淡出），
-          与右列文字、scrim 同窗口进行 */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.45, duration: 0.3 } }}
-        exit={{ opacity: 0, y: isMobile ? 0 : 24, filter: "blur(8px)", transition: { duration: 0.4, ease: "easeIn" } }}
-        className="mt-5 flex flex-wrap gap-2"
-      >
-        {work.platforms.map((p) => {
-          const tag = platformTag(p);
-          const Icon = tag.icon;
-          return (
-            <span
-              key={p}
-              className="glass inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[0.72rem] font-medium text-ink-2"
-            >
-              <Icon size={13} strokeWidth={2} style={{ color: accent }} />
-              {tag.label}
-            </span>
-          );
-        })}
-      </motion.div>
     </div>
   );
 
   return (
-    <DetailOverlay accent={accent} tint={work.palette} backdropSrc={work.cover} onClose={close} cover={cover}>
+    <DetailOverlay accent={accent} tint={work.palette} backdropSrc={work.cover} onClose={close} coverSide={coverSide} cover={cover}>
       {/* ① 作品头 */}
       <DetailBlock>
         <p className="eyebrow" style={{ color: accent }}>

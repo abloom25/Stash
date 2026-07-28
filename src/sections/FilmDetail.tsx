@@ -13,8 +13,8 @@
  * 关闭（返回按钮 / scrim / ESC，由 DetailOverlay 处理）→ navigate('/#film')。
  * id 无匹配：渲染 null，并在 effect 中 navigate('/#film', { replace: true })。
  */
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { Star } from "lucide-react";
 import type { FilmWork } from "@/data/types";
@@ -76,6 +76,7 @@ function RatingStars({ rating, accent }: { rating: number; accent: string }) {
 
 export default function FilmDetail({ id }: { id?: string }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const reduce = useReducedMotion() ?? false;
   const work = filmWorks.find((w) => w.id === id);
 
@@ -83,6 +84,12 @@ export default function FilmDetail({ id }: { id?: string }) {
   useEffect(() => {
     if (!work) navigate("/#film", { replace: true });
   }, [work, navigate]);
+
+  // 封面列方位：跟随被点击卡片所在半屏（卡片经 navigate state 传入；直链默认左）。
+  // 挂载时锁存——退出动画期间 location.state 已随路由变化清空，不能现读
+  const [coverSide] = useState<"left" | "right">(() =>
+    (location.state as { coverSide?: string } | null)?.coverSide === "right" ? "right" : "left"
+  );
 
   if (!work) return null;
 
@@ -95,6 +102,7 @@ export default function FilmDetail({ id }: { id?: string }) {
       tint={work.palette}
       backdropSrc={work.cover} // 暗色模式下放大模糊的背景
       onClose={close}
+      coverSide={coverSide}
       cover={
         // 入场淡入；退出时不加淡出/模糊——海报要干净地 FLIP 飞回卡片，
         // 中途模糊淡出会让飞行动画残缺。

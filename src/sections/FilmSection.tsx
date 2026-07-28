@@ -47,7 +47,12 @@ function PosterCard({ work }: { work: FilmWork }) {
   const navigate = useNavigate();
   const reduce = useReducedMotion();
 
-  const open = () => navigate(`/film/${work.id}`);
+  // 按卡片所在半屏决定详情页封面列方位（左半屏→封面在左，右半屏→封面在右）
+  const open = (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const coverSide = rect.left + rect.width / 2 < window.innerWidth / 2 ? "left" : "right";
+    navigate(`/film/${work.id}`, { state: { coverSide } });
+  };
 
   return (
     <motion.article
@@ -58,7 +63,7 @@ function PosterCard({ work }: { work: FilmWork }) {
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          open();
+          open(e);
         }
       }}
       whileTap={{ scale: 0.98 }}
