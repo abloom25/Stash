@@ -20,7 +20,7 @@
 ## ✨ 特性
 
 - **FLIP 封面转场** — 点击卡片，封面以弹簧动画「飞」入详情页，返回时同步飞回原卡位（framer-motion `layoutId`）
-- **整页翻页滚动** — 每个板块独占一屏（100dvh），滚动时逐屏吸附翻页（Lenis Snap），板块间可配置分隔文本
+- **整页板块** — 每个板块独占一屏（100dvh）自然滚动，板块间可配置分隔文本
 - **同步退场动画** — 关闭详情时，文字模糊 + 淡出、背景模糊淡出与封面飞行三者同步进行，无生硬跳变
 - **配置驱动** — 站点文案、板块、卡片样式、平台标签（含图标）、社交链接全部集中在 [`src/config.ts`](src/config.ts)，构建时随编译嵌入页面
 - **亮 / 暗双主题** — 纸感亮色 + 暗夜模式，封面浸染式背景自适应
@@ -45,24 +45,23 @@ pnpm preview     # 本地预览构建产物
 
 | 配置项 | 说明 |
 | --- | --- |
-| `SITE` | 站点名、Hero 签名句、板块间分隔文本（`editorNotes`，按间隔配置，置空不显示）、细页脚 slogan |
-| `SECTIONS` | 板块元信息（导航 / 页脚 / 路由 / 主题色） |
-| `CARD_STYLES` | 每个板块的卡片样式：竖版 `vertical`（2:3 海报）/ 横版 `horizontal`（16:9 key-art），以及封面下方标题行、标签 chips 的显隐开关 |
+| `SITE` | 站点名、Hero 文案（eyebrow / 大标题 / 英文行 / 签名句）、板块间分隔文本（`editorNotes`，按间隔配置，置空不显示）、细页脚 slogan、GitHub 仓库链接（`repoUrl`，置空不显示） |
+| `SECTIONS` | **板块完全由此驱动**——增删板块、`eyebrow` / 大标题 / 手记文案、主题色、卡片样式（竖版 2:3 / 横版 16:9、封面下方信息显隐）、卡片副标题（`cardSubtitle`）、详情 eyebrow（`detailEyebrow`）、详情信息栏格子（`infoCells`）。新增板块 = `src/data/` 加一个数据文件 + 这里加一条，主页板块、路由 `/<id>/:workId`、锚点、详情页全部自动生成 |
 | `PLATFORM_TAGS` | 平台标签的显示名与图标（如 `PC` → `Monitor` 图标），卡片与详情页统一渲染 |
 | `TAG_ICONS` | 类型标签的可选图标映射 |
 
-页脚为底部一条细栏：左侧 `SITE.footerSlogan`，右侧硬编码的 GitHub 仓库图标链接。
+页脚为底部一条细栏：左侧 `SITE.footerSlogan`，右侧 GitHub 图标链接（`SITE.repoUrl`）。
 
-作品内容数据在 `src/data/`（`films.ts` / `games.ts`），每个字段带行内注释与 `TODO(主人)` 标记。
+作品内容数据在 `src/data/`（`films.ts` / `games.ts`），全板块共用 `Work` 类型（板块特有字段皆为可选），每个字段带行内注释与 `TODO(主人)` 标记。
 
 ## 🗂 项目结构
 
 ```
 src/
-├── config.ts          ★ 站点集中配置（文案 / 板块 / 卡片样式 / 标签图标 / 社交链接）
-├── data/              作品内容数据（films / games）与公共类型
-├── components/        共享组件（DetailOverlay / FullPageSection / WorkCard / ui）
-├── sections/          板块与详情页（FilmSection / GamesSection / FilmDetail / GamesDetail）
+├── config.ts          ★ 站点集中配置（SITE 文案 / SECTIONS 板块 / 平台标签 / 标签图标）
+├── data/              作品内容数据（films / games）与公共类型（Work / WorkExtra）
+├── components/        共享组件（DetailOverlay / FullPageSection / SectionHeader / Footer 等）
+├── sections/          通用板块与详情页（WorkSection / WorkDetail，由 SECTIONS 驱动）
 ├── pages/             路由页面（Home 长滚动页）
 ├── hooks/             自定义 hooks
 ├── lib/               工具（lenis 平滑滚动 / 主题 / 共享动画参数）
