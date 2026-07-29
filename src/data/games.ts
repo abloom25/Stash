@@ -4,12 +4,12 @@
  * 游戏名 / 开发商 / 年份 / 封面 / 媒体评测（IGN、GameSpot、Metacritic 等真实评分与引语摘录）
  * 均为真实信息。封面替换只需改 `cover` 路径（16:9）。
  * 平台标签的显示名与图标集中在 src/config.ts 的 PLATFORM_TAGS。
- * GameWork 之外的板块扩展字段（通关状态 / 综合分 / 成就）见下方 `gameExtras`，
+ * Work 之外的板块扩展字段（通关状态 / 综合分 / 成就）见下方 `gameExtras`，
  * 与 gameWorks 通过 id 关联。
  */
-import type { GameWork } from "./types";
+import type { Work } from "./types";
 
-export const gameWorks: GameWork[] = [
+export const gameWorks: Work[] = [
   {
     id: "game-01", // 路由 /games/game-01 与 layoutId cover-game-01 依赖此 id
     title: "死亡搁浅",
@@ -167,12 +167,12 @@ export const gameWorks: GameWork[] = [
  * 板块扩展字段（通关状态 / Metacritic 综合分 / 成就进度）。
  * 与 gameWorks 通过 id 关联。
  */
-export interface GameExtra {
+export type GameExtra = {
   status: "cleared" | "playing"; // 已通关 ✓ / 沉迷中…
   metaScore: number; // Metacritic 综合分
   achievements: string; // 成就进度，如 '32/32'
   hoursLabel?: string; // 时长展示文案（可选，如 '200h+'）
-}
+};
 
 export const gameExtras: Record<string, GameExtra> = {
   "game-01": {

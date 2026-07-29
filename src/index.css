@@ -47,12 +47,16 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(35, 32, 43, 0.16);
+    /* 透明边框 + padding-box 裁剪：制造「内缩细条」效果且与背景无关——
+       主页纸面与详情页 scrim/模糊封面上观感一致（之前边框写死纸色 #faf7f2，
+       在详情页会显形成白边，看起来像另一种滚动条） */
+    background-color: rgba(35, 32, 43, 0.16);
     border-radius: 999px;
-    border: 3px solid #faf7f2;
+    border: 3px solid transparent;
+    background-clip: padding-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(35, 32, 43, 0.28);
+    background-color: rgba(35, 32, 43, 0.28);
   }
   html {
     scroll-behavior: smooth;
@@ -120,6 +124,35 @@
     animation: hero-toggle-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 2.1s backwards;
   }
 
+  /* 详情覆盖层：作品主题色变量。--accent-text 专用于文字/图标，
+     暗色模式下自动向亮色混合，避免深色 palette（如 #3E4E7A）在暗底上不可读 */
+  .detail-overlay {
+    --accent-text: var(--accent, #8b7ec8);
+  }
+  /* FLIP 封面两端：强制全不透明。framer-motion 的 layoutId 共享转场默认做
+     透明度交叉淡化（飞行中的封面淡出「溶」掉、墙内卡片淡入），且归位瞬间
+     两端切换会产生明暗跳变（闪一下）；layoutCrossfade prop 无法关闭退出方向的
+     淡化，这里用 !important 直接钉死——封面完整飞行、卡片始终在墙内，交接无闪烁 */
+  .flip-opaque {
+    opacity: 1 !important;
+  }
+  /* 详情覆盖层存在期间（含 FLIP 往返全程）：墙内卡片的图内标题/渐变遮罩隐去——
+     裸海报留在卡位等待，避免封面未归位、标题遮罩先出现的突兀；
+     覆盖层卸载（=封面归位）后 0.35s 淡入 */
+  .card-caption {
+    transition: opacity 0.35s ease;
+  }
+  body:has(.detail-overlay) .card-caption {
+    opacity: 0;
+  }
+  /* 评分徽章：颜色由 --badge 驱动（内联注入），暗色下文本自动提亮 */
+  .score-badge {
+    background: color-mix(in srgb, var(--badge) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--badge) 20%, transparent);
+  }
+  .score-badge-text {
+    color: var(--badge);
+  }
   /* eyebrow 英文小标签 */
   .eyebrow {
     font-family: "Manrope", "Noto Sans SC", sans-serif;
@@ -198,9 +231,17 @@
     opacity: 0.34;
     filter: blur(70px) saturate(0.9) brightness(0.85);
   }
-  /* 暗色下评分徽章提亮，保证深底可读性 */
+  /* 暗色下 accent 文字提亮（详情页 eyebrow / 评分数字 / 星级等） */
+  html.dark .detail-overlay {
+    --accent-text: color-mix(in srgb, var(--accent) 55%, #ece8f4);
+  }
+  /* 暗色下评分徽章：文本向亮色混合，底色与描边稍加强保证可辨 */
   html.dark .score-badge {
-    filter: brightness(1.5) saturate(1.05);
+    background: color-mix(in srgb, var(--badge) 22%, transparent);
+    border-color: color-mix(in srgb, var(--badge) 45%, transparent);
+  }
+  html.dark .score-badge-text {
+    color: color-mix(in srgb, var(--badge) 55%, #ece8f4);
   }
 }
 
@@ -210,11 +251,10 @@
     color: #eae6f0;
   }
   html.dark ::-webkit-scrollbar-thumb {
-    background: rgba(234, 230, 240, 0.18);
-    border-color: #14121c;
+    background-color: rgba(234, 230, 240, 0.18);
   }
   html.dark ::-webkit-scrollbar-thumb:hover {
-    background: rgba(234, 230, 240, 0.3);
+    background-color: rgba(234, 230, 240, 0.3);
   }
   /* 暗色下噪点改为柔光模式，避免 multiply 把画面压黑 */
   html.dark .grain-overlay {

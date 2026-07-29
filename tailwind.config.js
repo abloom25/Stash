@@ -22,9 +22,7 @@ module.exports = {
           sky: "#CBE0F6",
           rose: "#F7CCDA",
         },
-        // 板块主题色（accent 仅作点缀 ≤10% 面积）
-        film: { DEFAULT: "#E07A54", soft: "#FBEEE7" },
-        games: { DEFAULT: "#8B7EC8", soft: "#EEEBF8" },
+        // 板块主题色不再入 tokens：各板块 accent 在 src/config.ts 的 SECTIONS 里配置
       },
       fontFamily: {
         // 中英混排自动落到 Fraunces/Noto Serif SC 与 Manrope/Noto Sans SC

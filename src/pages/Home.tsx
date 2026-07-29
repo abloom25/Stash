@@ -1,18 +1,18 @@
 /**
- * Home — 整站长页：Hero →（分隔文本）→ 板块 影视 →（分隔文本）→ 板块 游戏
- * →（分隔文本）→ 细页脚。每个整页板块 min-h-100dvh（FullPageSection），正常自然滚动。
+ * Home — 整站长页：Hero →（分隔文本）→ 板块们（按 src/config.ts 的 SECTIONS 顺序，
+ * 每个板块前各一条分隔文本）→（分隔文本）→ 细页脚。板块数量与顺序完全由配置决定。
+ * 每个整页板块 min-h-100dvh（FullPageSection），正常自然滚动。
  * 分隔文本按间隔配置（src/config.ts 的 SITE.editorNotes，置空则不显示）。
- * 详情覆盖层（/film/:id、/games/:id）以路由方式叠加在本页之上（见 App.tsx）。
+ * 详情覆盖层（/<section.id>/:workId）以路由方式叠加在本页之上（见 App.tsx）。
  */
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import Hero from "@/components/Hero";
-import FilmSection from "@/sections/FilmSection";
-import GamesSection from "@/sections/GamesSection";
+import WorkSection from "@/sections/WorkSection";
 import Footer from "@/components/Footer";
 import { scrollToHash } from "@/lib/lenis";
-import { SITE } from "@/config";
+import { SECTIONS, SITE } from "@/config";
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -54,11 +54,12 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <EditorNote text={notes[0] ?? ""} />
-      <FilmSection />
-      <EditorNote text={notes[1] ?? ""} />
-      <GamesSection />
-      <EditorNote text={notes[2] ?? ""} />
+      {SECTIONS.flatMap((section, i) => [
+        // 不用 <Fragment key>：dev 插件 plugin-inspect-react-code 会注入额外 prop，Fragment 拒收报错
+        <EditorNote key={`note-${section.id}`} text={notes[i] ?? ""} />,
+        <WorkSection key={section.id} section={section} />,
+      ])}
+      <EditorNote text={notes[SECTIONS.length] ?? ""} />
       <Footer />
     </>
   );

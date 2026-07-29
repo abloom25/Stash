@@ -1,23 +1,28 @@
 /**
  * <LinesBlock> — 名台词展示（玻璃块 + 大引号 + 衬线台词 + 说话人）。
- * 与 PressQuoteBlock 同族版式；accent 传作品主题色（work.palette）。
+ * 与 PressQuoteBlock 同族版式；accent 色取自 DetailOverlay 注入的
+ * --accent-text（暗色自动提亮），无需传参。
  */
 interface LineItem {
   text: string;
   speaker?: string;
 }
 
-export default function LinesBlock({ lines, accent }: { lines: LineItem[]; accent: string }) {
+export default function LinesBlock({ lines }: { lines: LineItem[] }) {
   return (
     <section aria-label="名台词" className="glass relative overflow-hidden rounded-card p-7 md:p-9">
-      <p className="eyebrow" style={{ color: accent }}>
+      <p className="eyebrow" style={{ color: "var(--accent-text)" }}>
         名台词 · MEMORABLE LINES
       </p>
       <ul className="mt-6 space-y-6">
         {lines.map((line, i) => (
           <li key={i} className="flex gap-3">
             {/* 装饰性大引号 */}
-            <span aria-hidden="true" className="mt-1 shrink-0 font-serif text-[1.8rem] leading-none" style={{ color: `${accent}99` }}>
+            <span
+              aria-hidden="true"
+              className="mt-1 shrink-0 font-serif text-[1.8rem] leading-none"
+              style={{ color: "color-mix(in srgb, var(--accent-text) 60%, transparent)" }}
+            >
               “
             </span>
             <div>

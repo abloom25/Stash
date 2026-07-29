@@ -16,7 +16,7 @@
  * prefers-reduced-motion：板块应改用淡入淡出（不加 layoutId 即可）。
  */
 import { useEffect, useRef } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -29,8 +29,9 @@ const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
-  // 退出不单独定义：由右列容器统一做「模糊 + 淡出」（见 src/lib/motion.ts），
-  // 与封面 FLIP 同时进行，避免文字先行消失
+  // 退出 = 入场镜像：按反序 stagger 回退到 hidden（y:0→24 下移淡出），
+  // 无模糊、无侧移，与封面 FLIP 回飞同窗口进行
+  exit: { opacity: 0, y: 24, transition: { duration: 0.5, ease: EASE } },
 };
 
 /** 内容分块包装：获得 stagger 入场 */
@@ -53,7 +54,7 @@ interface DetailOverlayProps {
 }
 
 export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cover, children, coverSide = "left" }: DetailOverlayProps) {
-  const isMobile = useIsMobile(); // 退出方向分端：桌面内容列向远离封面侧、tag 向下；移动端原地
+  const isMobile = useIsMobile(); // 点空白关闭 / scrim 点击仅桌面端启用（窄屏防误触）
   const flip = coverSide === "right"; // 桌面端封面列置右（窄屏无需判断：封面恒居中居上）
   // 触摸下拉退出的起点记录（仅滚动到顶时下拉才触发）
   const touchStart = useRef<{ x: number; y: number; scrollTop: number } | null>(null);
@@ -73,38 +74,50 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // body 滚动锁定 + Lenis 暂停（覆盖层自身可滚动）
+  // body 滚动锁定 + Lenis 暂停（覆盖层自身可滚动）。
+  // 锁定时滚动条消失会引起内容右移——给 body 补一个滚动条等宽的 padding-right
+  // 抵消（不用 scrollbar-gutter：预留槽位是 fixed 覆盖层盖不住的 html 外区域，
+  // 会在详情页右侧漏出一条底色竖条）
   useEffect(() => {
     const lenis = getLenis();
     const prev = document.body.style.overflow;
+    const prevPadding = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
     lenis?.stop();
     return () => {
       document.body.style.overflow = prev;
+      document.body.style.paddingRight = prevPadding;
       lenis?.start();
     };
   }, []);
 
   return (
     <motion.div
-      className="fixed inset-0 z-50"
+      className="detail-overlay fixed inset-0 z-50"
+      // --accent 供子树派生 --accent-text（暗色自动提亮，见 index.css）
+      style={{ "--accent": accent } as CSSProperties}
       role="dialog"
       aria-modal="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      // 退出时整层多留到 FLIP 弹簧（≈650ms）落定：文字模糊淡出、scrim 淡出与封面
-      // 飞行同步进行（见下方 scrim / 右列 exit），最后整层快速收尾
-      exit={{ opacity: 0, transition: { duration: 0.15, delay: 0.55 } }}
+      // 退出时整层多留到 FLIP 弹簧（≈700ms）落定：内容列反序 stagger 下移淡出、
+      // 封面飞回原卡位、scrim 收尾淡出（各子层各自的 exit，见下）。
+      // 根层不做整体 opacity 淡出——那会把仍在飞行的封面带成半透明，
+      // 卸载瞬间陈列墙卡片封面接管显示成全不透明，归位时「闪一下」；
+      // 用一个无视觉变化的退出时长撑住层，等子层落定后卸载
+      exit={{ opacity: 1, transition: { duration: 0.72 } }}
     >
       {/* scrim：亮色=浓模糊+主题色浸染；暗色=封面放大模糊背景（.cover-backdrop，见 index.css）。点击空白关闭。
-          退出时与封面 FLIP 同步缓慢淡出（0.6s），与文字模糊淡出同窗口进行，
-          不再先行消失，避免详情文字与主页面文字重合的突兀感 */}
+          退出 = 入场镜像：入场时 scrim 最先淡入（0.3s），退场时最后淡出——
+          等内容块反序 stagger 落定后收尾（delay 0.4 + 0.3s），与封面 FLIP 回飞同窗口结束 */}
       <motion.div
         className="detail-scrim absolute inset-0"
         style={{ "--tint": tint ?? "#FAF7F2" } as React.CSSProperties}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: 0.3 } }}
-        exit={{ opacity: 0, transition: { duration: 0.6, ease: "easeIn" } }}
+        exit={{ opacity: 0, transition: { duration: 0.3, delay: 0.4, ease: "easeIn" } }}
         onClick={() => {
           if (!isMobile) onClose(); // 窄屏 scrim 点击不退出（防误触）
         }}
@@ -115,13 +128,13 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
 
       {/* 返回按钮：左上角 44px 玻璃圆钮（accent 箭头）。
           hover 展开「返回列表」仅限可悬停设备（[@media(hover:hover)]）——
-          触屏点按不触发，避免「先展开再退出」的怪感；退出时与文字同步模糊淡出。
+          触屏点按不触发，避免「先展开再退出」的怪感；退场与 scrim 同窗口收尾淡出。
           任意值 ease 类与 tw-animate-css 冲突不会生成 CSS，缓动改用内联 */}
       <motion.button
         type="button"
         onClick={onClose}
         aria-label="返回列表"
-        exit={{ opacity: 0, filter: "blur(6px)", transition: { duration: 0.35, ease: "easeIn" } }}
+        exit={{ opacity: 0, transition: { duration: 0.15, delay: 0.55, ease: "easeIn" } }}
         style={{ marginTop: "env(safe-area-inset-top)", transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1)" }}
         className="glass-strong group absolute left-4 top-4 z-10 flex h-11 w-11 items-center overflow-hidden rounded-full transition-[width] duration-500 [@media(hover:hover)]:hover:w-[124px] md:left-8 md:top-6"
       >
@@ -129,7 +142,7 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
           <ArrowLeft
             size={16}
             strokeWidth={2}
-            style={{ color: accent }}
+            style={{ color: "var(--accent-text)" }}
             className="transition-transform duration-300 [@media(hover:hover)]:group-hover:-translate-x-0.5"
           />
         </span>
@@ -187,16 +200,12 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
               <div className="lg:sticky lg:top-[clamp(20px,4vw,56px)]">{cover}</div>
             </div>
             {/* 内容列：流式内容块（stagger 入场）；块间/底部空白同样可点关闭。
-                退出：桌面端向远离封面一侧模糊淡出，移动端原地模糊淡出（与封面 FLIP 同步） */}
+                退出 = 入场镜像：分块按反序（staggerDirection: -1）逐个 y:0→24 淡出
+                （itemVariants.exit），与封面 FLIP 回飞同窗口进行，无模糊无侧移 */}
             <motion.div
               variants={{
                 ...overlayContentVariants,
-                exit: {
-                  opacity: 0,
-                  x: isMobile ? 0 : flip ? -48 : 48,
-                  filter: "blur(12px)",
-                  transition: { duration: 0.45, ease: "easeIn" },
-                },
+                exit: { transition: { staggerChildren: 0.09, staggerDirection: -1 } },
               }}
               initial="hidden"
               animate="show"

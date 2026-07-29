@@ -63,22 +63,22 @@ export default function Hero() {
 
       <div className="hero-inner mx-auto max-w-[1280px] px-[clamp(20px,5vw,64px)] pt-[22vh]">
         <div className="max-w-[900px]">
-          {/* 1. Eyebrow 行：32px accent 渐变短线 + 标签 */}
+          {/* 1. Eyebrow 行：32px accent 渐变短线 + 标签（文案见 config.ts SITE） */}
           <div className="hero-eyebrow flex items-center gap-4">
             <span
               aria-hidden="true"
               className="h-px w-8"
               style={{ background: "linear-gradient(90deg, #7B6BD6, #E07A54)" }}
             />
-            <p className="eyebrow">A PERSONAL CANON · 私人珍藏志</p>
+            <p className="eyebrow">{SITE.heroEyebrow}</p>
           </div>
 
-          {/* 2. 中文大标题（按字 split 入场） */}
+          {/* 2. 中文大标题（按字 split 入场；文案见 config.ts SITE） */}
           <h1 className="mt-8 font-serif text-[clamp(3rem,8.5vw,7.5rem)] font-black leading-[1.05] tracking-[0.02em] text-ink">
-            <span className="hero-title-line block">把热爱的事物</span>
+            <span className="hero-title-line block">{SITE.heroTitleLine1}</span>
             <span className="hero-title-line relative block">
               <span className="relative inline-block">
-                装订成册
+                {SITE.heroTitleLine2}
                 {/* lavender → peach 渐变下划线（宽 40%） */}
                 <span
                   aria-hidden="true"
@@ -86,13 +86,12 @@ export default function Hero() {
                   style={{ background: "linear-gradient(90deg, #DCD3F7, #FFD9C2)" }}
                 />
               </span>
-              。
             </span>
           </h1>
 
           {/* 3. 英文装饰行 */}
           <p className="hero-en mt-10 font-serif text-[clamp(1rem,2vw,1.5rem)] italic tracking-[0.14em] text-ink-2">
-            Music, Film &amp; Play — pressed between pages like dried flowers.
+            {SITE.heroEn}
           </p>
 
           {/* 4. 个人签名句（文案在 src/config.ts 的 SITE.heroSignature） */}

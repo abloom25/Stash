@@ -5,9 +5,9 @@
  * 简介可按喜好替换。
  * 封面替换只需改 `cover` 路径（2:3）。
  */
-import type { FilmWork } from "./types";
+import type { Work } from "./types";
 
-export const filmWorks: FilmWork[] = [
+export const filmWorks: Work[] = [
   {
     id: "film-01",
     title: "龙之谷：破晓奇兵",

@@ -1,8 +1,10 @@
 /**
  * 「私藏 · Stash」公共数据模型（design.md §8）
  *
- * 各板块数据文件（films.ts / games.ts）由对应板块维护，字段均带行内注释。
- * 封面替换只需改 `cover` 路径；站点级配置（板块 / 标签 / 社交链接）见 src/config.ts。
+ * 所有板块共用同一个 Work 类型：公共字段必填，板块特有字段（导演 / 片长 /
+ * 平台 / 时长…）全部为可选——新增板块不需要扩展类型，在数据文件里直接填、
+ * 在 src/config.ts 的 SECTIONS 条目里决定哪些字段进信息栏（infoCells）。
+ * 封面替换只需改 `cover` 路径；站点级配置见 src/config.ts。
  */
 
 /** 媒体 / 权威机构评语 */
@@ -13,12 +15,12 @@ export interface PressQuote {
   url?: string; // 原文链接（可选）
 }
 
-/** 作品公共字段 */
-export interface WorkBase {
-  id: string; // 'film-01'
+/** 作品（全板块通用；板块特有字段按需填可选部分） */
+export interface Work {
+  id: string; // 'film-01' —— 路由与 FLIP layoutId 依赖，不要随意改
   title: string; // 中文名
   titleEn: string; // 英文 / 原文名
-  creator: string; // 艺术家 / 导演 / 开发商
+  creator: string; // 艺术家 / 导演 / 开发商 / 作者
   year: number;
   genres: string[]; // 2-3 个标签
   cover: string; // 'assets/cover-film-01.png' —— 替换封面改这里（相对路径，见 AGENTS.md 子路径约定）
@@ -27,32 +29,18 @@ export interface WorkBase {
   myRating: number; // 个人评分 0-10
   description: string; // 简短简介（一两句话）
   lines: { text: string; speaker?: string }[]; // 名台词展示
+
+  // ── 以下为板块特有可选字段，用到的板块才填 ──
+  director?: string; // 影视：导演
+  runtime?: string; // 影视：'118 分钟' / '全 11 集'
+  type?: "电影" | "剧集" | "纪录片"; // 影视：作品类型
+  platforms?: string[]; // 游戏：['Switch', 'PC'] —— 显示名与图标见 src/config.ts PLATFORM_TAGS
+  hoursPlayed?: number; // 游戏：游玩时长（小时）
 }
 
-/** 影视：导演 / 片长 / 类型 */
-export interface FilmWork extends WorkBase {
-  director: string;
-  runtime: string; // '118 分钟' / '全 11 集'
-  type: "电影" | "剧集" | "纪录片";
-}
-
-/** 游戏：平台 / 时长 */
-export interface GameWork extends WorkBase {
-  platforms: string[]; // ['Switch', 'PC'] —— 显示名与图标见 src/config.ts PLATFORM_TAGS
-  hoursPlayed: number; // 游玩时长（小时）
-}
-
-/** 板块标识 */
-export type SectionId = "film" | "games";
-
-/** 板块元信息（实例见 src/config.ts 的 SECTIONS） */
-export interface SectionMeta {
-  id: SectionId;
-  index: string; // '01'
-  zh: string; // '影视'
-  en: string; // 'CINEMA & SCREEN'
-  hash: string; // '#film'
-  route: string; // '/film'
-  accent: string; // 板块主题色
-  accentSoft: string; // 主题色浅 tint
-}
+/**
+ * 板块扩展字段（与 works 按 id 关联）。具体字段由各板块数据文件自定义
+ * （只要值是 string / number），例如 games.ts 的 GameExtra（通关状态 / 成就）。
+ * 是否展示、如何展示由 config.ts 该板块的 infoCells 决定。
+ */
+export type WorkExtra = Record<string, string | number | undefined>;
