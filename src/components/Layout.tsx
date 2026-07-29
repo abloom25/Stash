@@ -1,7 +1,6 @@
 /**
  * <Layout> — 共享布局（嵌套路由模式：<Outlet/>，App.tsx 必须使用嵌套 <Route>）。
- * 组成：全局背景层（光斑 + 噪点）→ 内容槽。（主人要求：不再渲染 Navbar / Footer，
- * 组件文件保留在 src/components 备用。）
+ * 组成：全局背景层（光斑 + 噪点）→ 内容槽（页脚由 Home 渲染）。
  * Lenis 平滑滚动在此初始化（lerp 0.09，reduced-motion 时降级为原生）。
  *
  * 首页 Hero 为全出血设计故不加全局顶部 padding；

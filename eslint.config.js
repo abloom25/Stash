@@ -20,11 +20,4 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
-  {
-    // shadcn/ui 组件：variants、hooks 等非组件导出是官方约定，豁免 fast-refresh 限制
-    files: ['src/components/ui/**/*.{ts,tsx}'],
-    rules: {
-      'react-refresh/only-export-components': 'off',
-    },
-  },
 ])

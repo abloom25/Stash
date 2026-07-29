@@ -1,9 +1,9 @@
 /**
- * <DetailOverlay> — 详情覆盖层外壳，三板块共用（design.md §7.4 / home.md §5）
+ * <DetailOverlay> — 详情覆盖层外壳，各板块共用（design.md §7.4 / home.md §5）
  *
- * 用法（板块 agent）：
+ * 用法：
  * ```tsx
- * <DetailOverlay accent={accent} onClose={() => navigate("/#music")} cover={
+ * <DetailOverlay accent={accent} onClose={() => navigate("/#games")} cover={
  *   <motion.img layoutId={`cover-${work.id}`} src={work.cover} transition={FLIP_SPRING} … />
  * }>
  *   <DetailBlock>…信息栏…</DetailBlock>
@@ -12,7 +12,7 @@
  * </DetailOverlay>
  * ```
  * 外层用 <AnimatePresence> 包裹以获得退出动画；封面元素的 layoutId 与
- * WorkCard 中 `cover-${id}` 对应即触发 FLIP（spring 见 FLIP_SPRING）。
+ * 板块卡片中 `cover-${id}` 对应即触发 FLIP（spring 见 FLIP_SPRING）。
  * prefers-reduced-motion：板块应改用淡入淡出（不加 layoutId 即可）。
  */
 import { useEffect, useRef } from "react";
@@ -174,15 +174,17 @@ export default function DetailOverlay({ accent, tint, backdropSrc, onClose, cove
               flip ? "lg:grid-cols-[minmax(0,1fr)_400px]" : "lg:grid-cols-[400px_minmax(0,1fr)]"
             }`}
           >
-            {/* 封面列：桌面 sticky top 且撑满整行高度（封面下方空白也能点关闭）；
-                coverSide=right 时置右（order-2），移动端恒居上（55% 宽居中） */}
+            {/* 封面列：外层撑满整行高度（封面下方空白也能点关闭），
+                内层 sticky 锚位——滚动时封面吸住不动（外层与网格同高，
+                sticky 只能挂在内层才有滑动空间）；移动端 55% 宽居中偏上。
+                coverSide=right 时置右（order-2），移动端恒居上 */}
             <div
-              className={`mx-auto min-h-[40vh] w-[55%] self-start lg:sticky lg:top-[clamp(20px,4vw,56px)] lg:mx-0 lg:min-h-[70vh] lg:w-full lg:self-stretch ${
+              className={`mx-auto w-[55%] self-start lg:mx-0 lg:min-h-[70vh] lg:w-full lg:self-stretch ${
                 flip ? "lg:order-2" : ""
               }`}
               onClick={blankClose}
             >
-              {cover}
+              <div className="lg:sticky lg:top-[clamp(20px,4vw,56px)]">{cover}</div>
             </div>
             {/* 内容列：流式内容块（stagger 入场）；块间/底部空白同样可点关闭。
                 退出：桌面端向远离封面一侧模糊淡出，移动端原地模糊淡出（与封面 FLIP 同步） */}

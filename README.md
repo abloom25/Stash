@@ -86,7 +86,7 @@ src/
 
 - **构建**：Vite 7 + TypeScript 5.9
 - **框架**：React 19 + react-router 7
-- **样式**：Tailwind CSS 3 + shadcn/ui（Radix UI）
+- **样式**：Tailwind CSS 3 + 自定义组件（CSS 变量双主题）
 - **动画**：framer-motion（FLIP / 滚动视差）、GSAP ScrollTrigger（首屏）、Lenis（平滑滚动）
 - **CI/CD**：GitHub Actions（lint + 类型检查 + 构建 + Pages 部署）
 

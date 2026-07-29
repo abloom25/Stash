@@ -24,7 +24,7 @@ Node.js 要求 22+（pnpm 11 需要）。CI 对每个 PR / push 跑 `lint` + `bu
 src/
 ├── config.ts          站点集中配置（文案/板块/卡片样式/标签图标/社交链接）—— 改配置只动这里
 ├── data/              作品数据（films.ts / games.ts）+ 公共类型（types.ts）
-├── components/        共享组件；ui/ 为 shadcn 组件（尽量不改，见下文「红线」）
+├── components/        共享组件（DetailOverlay / FullPageSection / Footer 等）
 ├── sections/          板块（FilmSection / GamesSection）与详情页（FilmDetail / GamesDetail）
 ├── pages/Home.tsx     长滚动主页（Hero + 板块 + 过渡条）
 ├── lib/motion.ts      共享动画参数（FLIP_SPRING / overlayContentVariants）
@@ -54,7 +54,7 @@ src/
 
 ### 样式
 
-- Tailwind CSS + shadcn/ui；主题用 CSS 变量（`--paper` / `--ink` 等，见 `index.css`），亮暗双主题。
+- Tailwind CSS + 自定义组件；主题用 CSS 变量（`--paper` / `--ink` 等，见 `index.css`），亮暗双主题。
 - 路径别名 `@/` → `src/`，优先于深层相对路径。
 
 ## 红线
@@ -62,7 +62,6 @@ src/
 - **绝不擅自执行 git 变更操作**：`git commit` / `push` / `reset` / `rebase` / `force-push` 等，每次都必须先获得用户当场明确许可；用户之前的授权不自动延续到下一次操作。
 - **绝不绕过提交签名**：本仓库要求 GPG/SSH 签名提交（`commit.gpgsign=true`）。签名失败（如 1Password agent 未运行）时，停下来报告用户，等其解锁后重试；**禁止**用 `-c commit.gpgsign=false`、`--no-gpg-sign` 或改动 git 配置等任何方式绕过。
 - 不要引入新的包管理器文件（只认 `pnpm-lock.yaml`）。
-- 不要给 `src/components/ui/**` 加业务逻辑；其非组件导出是 shadcn 官方约定，ESLint 已对该目录豁免 `react-refresh/only-export-components`。
 - 不要绕过 ESLint 报错硬提交；确需豁免时用带理由的单行 `eslint-disable-next-line`。
 
 ## Git 规范
